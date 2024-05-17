@@ -1,0 +1,27 @@
+name: Poutine Organization Scan
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  IMAGE: ghcr.io/boostsecurityio/poutine:0.10.1@sha256:135992129b6775b52834f081c0e720046345361de373f9ce306c922669652329
+  ORG: ${{ github.repository_owner }}
+
+jobs:
+  poutine:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: poutine analyze_org
+        run: |
+          docker run -i "$IMAGE" analyze_org "$ORG" --format sarif > results.sarif
+          
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@b7cec7526559c32f1616476ff32d17ba4c59b2d6 # v3
+        with:
+          sarif_file: results.sarif
+          
