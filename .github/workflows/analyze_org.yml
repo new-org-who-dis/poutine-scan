@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+    env: 
+      GH_TOKEN: ${{ secrets.GH_TOKEN }} 
     steps:
       - name: poutine analyze_org
-        env: 
-          GH_TOKEN: ${{ secrets.GH_TOKEN }} 
         run: |
-          docker run -e GH_TOKEN -i "$IMAGE" analyze_org "$ORG" --format sarif > results.sarif
+          docker run -e GH_TOKEN "$IMAGE" analyze_org "$ORG" --format sarif > results.sarif
           
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@b7cec7526559c32f1616476ff32d17ba4c59b2d6 # v3
