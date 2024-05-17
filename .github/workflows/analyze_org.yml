@@ -16,11 +16,11 @@ jobs:
     permissions:
       security-events: write
     env: 
-      GH_TOKEN: ${{ secrets.GH_TOKEN }} 
+      GH_TOKEN: ${{ github.token }} 
     steps:
       - name: poutine analyze_org
         run: |
-          docker run -e GH_TOKEN "$IMAGE" analyze_org "$ORG" --format sarif > results.sarif
+          docker run -e GH_TOKEN "$IMAGE" analyze_org "$ORG" --format sarif | tee results.sarif
           
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@b7cec7526559c32f1616476ff32d17ba4c59b2d6 # v3
